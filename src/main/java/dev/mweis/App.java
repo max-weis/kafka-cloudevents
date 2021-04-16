@@ -26,8 +26,8 @@ public class App {
     }
 
     @Incoming("cloudevents-in")
-    public CompletionStage<Void> process(Message<String> priceInUsd) {
-        IncomingCloudEventMetadata<Integer> cloudEventMetadata = priceInUsd.getMetadata(IncomingCloudEventMetadata.class)
+    public CompletionStage<Void> process(Message<String> msg) {
+        IncomingCloudEventMetadata<Integer> cloudEventMetadata = msg.getMetadata(IncomingCloudEventMetadata.class)
             .orElseThrow(() -> new IllegalArgumentException("Expected a Cloud Event"));
 
         System.out.println(String.format("Received Cloud Events (spec-version: %s): source:  '%s', type: '%s', subject: '%s' , data: '%s'",
@@ -37,13 +37,13 @@ public class App {
             cloudEventMetadata.getSubject().orElse("no subject"),
             cloudEventMetadata.getData()));
 
-        return priceInUsd.ack();
+        return msg.ack();
     }
 
     @Incoming("cloudevents-in")
-    public CompletionStage<Void> process2(Message<String> priceInUsd) {
-        System.out.println(priceInUsd.getPayload());
+    public CompletionStage<Void> process2(Message<String> msg) {
+        System.out.println(msg.getPayload());
 
-        return priceInUsd.ack();
+        return msg.ack();
     }
 }
